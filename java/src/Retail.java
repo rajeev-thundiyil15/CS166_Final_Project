@@ -411,7 +411,7 @@ public class Retail {
 
    public static void viewProducts(Retail esql) {
 
-   }
+     }
    public static void placeOrder(Retail esql) {}
    public static void viewRecentOrders(Retail esql) {}
    public static void updateProduct(Retail esql) {}
