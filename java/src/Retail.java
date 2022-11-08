@@ -353,7 +353,8 @@ public class Retail {
     **/
    public static void CreateUser(Retail esql){
       try{
-         System.out.print("\tEnter name: ");
+       
+	 System.out.print("\tEnter name: ");
          String name = in.readLine();
          System.out.print("\tEnter password: ");
          String password = in.readLine();
@@ -361,13 +362,15 @@ public class Retail {
          String latitude = in.readLine();       //enter lat value between [0.0, 100.0]
          System.out.print("\tEnter longitude: ");  //enter long value between [0.0, 100.0]
          String longitude = in.readLine();
-         
          String type="Customer";
 
-			String query = String.format("INSERT INTO USERS (name, password, latitude, longitude, type) VALUES ('%s','%s', %s, %s,'%s')", name, password, latitude, longitude, type);
+	 String query = String.format(
+		"INSERT INTO USERS (name, password, latitude, longitude, type) VALUES ('%s','%s', %s, %s,'%s')", name, password, latitude, longitude, type);
 
          esql.executeUpdate(query);
          System.out.println ("User successfully created!");
+	 String query2 = "SELECT name FROM USERS";
+	 esql.executeQueryAndPrintResult(query2);
       }catch(Exception e){
          System.err.println (e.getMessage ());
       }
@@ -398,7 +401,14 @@ public class Retail {
 
 // Rest of the functions definition go in here
 
-   public static void viewStores(Retail esql) {}
+   public static void viewStores(Retail esql) {
+	
+
+
+   }
+
+
+
    public static void viewProducts(Retail esql) {}
    public static void placeOrder(Retail esql) {}
    public static void viewRecentOrders(Retail esql) {}
