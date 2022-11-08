@@ -68,7 +68,7 @@ public class Retail {
    }//end Retail
 
    // Method to calculate euclidean distance between two latitude, longitude pairs. 
-   public double calculateDistance (double lat1, double long1, double lat2, double long2){
+   public static double calculateDistance (double lat1, double long1, double lat2, double long2){
       double t1 = (lat1 - lat2) * (lat1 - lat2);
       double t2 = (long1 - long2) * (long1 - long2);
       return Math.sqrt(t1 + t2); 
@@ -289,7 +289,7 @@ public class Retail {
                 System.out.println(".........................");
                 System.out.println("20. Log out");
                 switch (readChoice()){
-                   case 1: viewStores(esql); break;
+                   case 1: viewStores(esql, authorisedUser); break;
                    case 2: viewProducts(esql); break;
                    case 3: placeOrder(esql); break;
                    case 4: viewRecentOrders(esql); break;
@@ -401,8 +401,75 @@ public class Retail {
 
 // Rest of the functions definition go in here
 
-   public static void viewStores(Retail esql) {
-	
+   public static void viewStores(Retail esql, String authorizedUser) {
+	try {
+		double lat = 0.0;
+		double longi = 0.0;
+		Statement stmt = esql._connection.createStatement();
+		//get lat/long for user and lat/long for store
+		String honse = "SELECT latitude, longitude FROM Users WHERE name = '"+ authorizedUser+ "'";
+		String lat_long_user_query = (honse);
+		ResultSet rs = stmt.executeQuery(lat_long_user_query);
+		ResultSetMetaData rsmd = rs.getMetaData();
+		int numCol = rsmd.getColumnCount();
+		int rowCount = 0;
+		boolean outputHead = true;
+		while(rs.next()) {
+			if(outputHead) {
+				for(int i = 1; i <= numCol; i++) {
+					System.out.print(rsmd.getColumnName(i) + "\t");
+				}
+				System.out.println();
+				outputHead = false;
+			}
+			lat = rs.getDouble(1);
+			longi = rs.getDouble(2);
+			System.out.print(lat);
+			System.out.print("\t");
+			System.out.println(longi);
+/*
+			for(int i = 1; i <= numCol; i++) {
+				System.out.print(rs.getDouble(i) + "\t");
+			}
+*/
+			System.out.println();
+			++rowCount;
+		}
+		stmt.close();
+
+		stmt = esql._connection.createStatement();
+		String lat_long_store_query = ("SELECT latitude, longitude FROM Store");
+		rs = stmt.executeQuery(lat_long_store_query);
+		rsmd = rs.getMetaData();
+		numCol = rsmd.getColumnCount();
+		rowCount = 0;
+		outputHead = true;
+		while(rs.next()) {
+			if(outputHead) {
+				for(int i = 1; i <= numCol; i++) {
+					System.out.print(rsmd.getColumnName(i) + "\t");
+				}
+				System.out.println();
+				outputHead = false;
+			}
+			double lat2 = rs.getDouble(1);
+			double longi2 = rs.getDouble(2);
+			double result = calculateDistance(lat, longi, lat2, longi2);
+			if(result < 30) {
+				String query3 = String.format("SELECT name, latitude, longitude FROM Store WHERE latitude = '"+ lat2 + "' AND longitude = '"+longi2+ "'" );
+				esql.executeQueryAndPrintResult(query3);
+			}
+
+		}
+		stmt.close();		
+//esql.executeQuery(lat_long_user_query);
+		
+		//esql.executeQueryAndPrintResult(lat_long_store_query);
+
+		//String final = String.format("	
+	}catch(Exception e) {
+		System.err.println(e.getMessage());
+	}	
 
 
    }
